@@ -3,6 +3,10 @@
     "target": "es2016",
     "module": "commonjs",
     "rootDir": "./src",
+    "typeRoots": [
+      "./node_modules/@types",
+      "src/@types"
+    ] /* Specify multiple folders that act like './node_modules/@types'. */,
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

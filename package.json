@@ -9,7 +9,11 @@
     "watch-dev": "nodemon --watch \"dist/**/*\" -e js ./dist/index.js",
     "build": "swc src -d dist",
     "start": "NODE_ENV=production node dist/index.js",
+    "prisma-seed": "yarn build && yarn prisma db seed",
     "clean": "rm -rf dist"
+  },
+  "prisma": {
+    "seed": "node dist/seed/seed.js"
   },
   "author": "Shree Krishna Lamichhane",
   "license": "MIT",
@@ -25,6 +29,8 @@
   "dependencies": {
     "@prisma/client": "4.7.1",
     "dotenv": "^16.0.3",
-    "socket.io": "^4.5.4"
+    "prisma": "^4.7.1",
+    "socket.io": "^4.5.4",
+    "socket.io-client": "^4.5.4"
   }
 }

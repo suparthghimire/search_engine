@@ -1,4 +1,5 @@
 import Log from "../helpers/log";
+import JobService from "../services/JobService";
 
 const PingPongController = {
     pingClient: (client: any) => {
@@ -14,6 +15,8 @@ const PingPongController = {
     },
     whenDisconnected: (client: any) => {
         Log.log("Disconnect", "Client " + client.id + " disconnected");
+        // Release the abandoned jobs
+        JobService.releaseAllReservedJobByAgentId(client.id);
     }
 }
 export default PingPongController;

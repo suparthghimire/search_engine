@@ -131,4 +131,9 @@ dist
 
 /dist
 
+*.db
 logs/*
+
+/src/seed/*.json
+
+/storage/*
