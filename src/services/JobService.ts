@@ -93,6 +93,17 @@ const JobService = {
             }
         })
     },
+    failJob: async (id: number) => {
+        return await prisma.job.update({
+            where: {
+                id: id
+            },
+            data: {
+                status: "failed",
+                dispatchToken: null
+            }
+        })
+    },
     getJob: async () => {
         return await prisma.job.findFirst({
             where: {

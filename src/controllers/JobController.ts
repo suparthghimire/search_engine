@@ -65,7 +65,7 @@ const JobController = {
                 else {
                     // Fetch Unsuccessful
                     Log.log("Fetch Failed", originalJob.url + " fetched failed by client :" + socket.id)
-                    await JobService.doneJob(originalJob.id)
+                    await JobService.failJob(originalJob.id)
                 }
             }
 
