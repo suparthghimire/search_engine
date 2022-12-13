@@ -11,12 +11,16 @@ datasource db {
 }
 
 model Job {
-  id            Int      @id @default(autoincrement())
-  url           String   @db.LongText
-  status        String   @default("free")
+  id            Int       @id @default(autoincrement())
+  url           String    @db.LongText
+  status        String    @default("free")
   dispatchToken String?
   dispatchAgent String?
-  contentHashId String   @unique
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  contentHashId String    @unique
+  serverStart   DateTime?
+  serverEnd     DateTime?
+  clientStart   DateTime?
+  clientEnd     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }

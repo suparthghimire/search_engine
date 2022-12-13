@@ -30,15 +30,6 @@ const io = require('socket.io')(server, {
 io.on('connection', (client: any) => {
     Log.log('Connect', 'Client Connected : ' + client.id);
 
-    setTimeout(async () => {
-        await JobService.createJobIfNotExists({
-            url: "https://p2.gov.np?id=" + randomInt(10),
-            status: "free",
-            contentHashId: randomUUID(),
-        })
-        client.emit('dispatch_ready')
-    }, 15000)
-
     // PingPongController.pingClient(client);
     client.on('ping', () => PingPongController.pongClient(client));
     client.on('pong', () => PingPongController.gotPongBack(client));

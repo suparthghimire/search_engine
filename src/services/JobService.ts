@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Job, PrismaClient } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { Socket } from "socket.io-client";
 import { TypeJob } from "../@types/types";
@@ -80,6 +80,14 @@ const JobService = {
                 dispatchToken: null,
                 dispatchAgent: null
             }
+        })
+    },
+    updateJob: async (job: Job) => {
+        return await prisma.job.update({
+            where: {
+                id: job.id
+            },
+            data: job
         })
     },
     doneJob: async (id: number) => {

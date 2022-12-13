@@ -5,6 +5,7 @@ import JobService from "../services/JobService";
 import { join as pathJoin } from "path";
 import { randomUUID } from "crypto";
 import urlHelper from "../helpers/urlHelper";
+import moment from "moment";
 
 const JobController = {
     onJobRequest: async (socket: Socket) => {
@@ -15,9 +16,9 @@ const JobController = {
 
         if (job) {
             job = await JobService.reserveJob(job.id, socket);
+            job.serverStart = new Date();
             socket.emit("dispatch", job)
         }
-
         else {
             Log.log("No Job", "No job in the pool.");
             socket.emit("dispatch", null)
@@ -58,7 +59,11 @@ const JobController = {
                     }
 
                     newJobsInserted && socket.emit('dispatch_ready')
-                    Log.log("Fetch Success", originalJob.url + " fetched successfully by client :" + socket.id)
+                    payload.job.serverEnd = new Date();
+                    const start = parseInt(moment(payload.job.serverStart).format('x')),
+                        end = parseInt(moment(payload.job.serverEnd).format('x'));
+                    Log.log("Fetch Success", originalJob.url + " fetched successfully by client :" + socket.id + " in " + (end - start) + " ms")
+                    await JobService.updateJob(payload.job);
                     await JobService.doneJob(originalJob.id)
                 }
 
