@@ -15,14 +15,20 @@ const JobController = {
     },
     gotJob: async (socket: Socket, job: any) => {
         if (job) {
+            job.clientStart = new Date();
             Log.log("Yes Job", "Got a new valid job");
             isWaiting = false;
             const browser: Browser = await puppeteer.launch({ headless: true });
             try {
                 let data = await JobService.scrape(browser, job);
 
-                data && Log.log("Fetch Success", "Fetched url :" + job.url); socket.emit("submit", { job, data });
+                if (data) {
+                    job.clientEnd = new Date();
+                    Log.log("Fetch Success", "Fetched url :" + job.url + " in " + (job.clientEnd - job.clientStart) + " ms");
+                    socket.emit("submit", { job, data });
+                }
             } catch (error) {
+                console.log(error)
                 Log.log("Fetch Failed", "Fetched url :" + job.url);
                 socket.emit("submit", { job, data: null })
             }
