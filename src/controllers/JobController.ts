@@ -25,6 +25,7 @@ const JobController = {
         }
     },
     onJobSubmit: async (socket: Socket, payload: any) => {
+        Log.log("Job Submit", socket.id + " submitted the job : " + payload.job.url);
         try {
             let newJobsInserted = false;
             let originalJob = await JobService.getJobById(payload.job.id);
