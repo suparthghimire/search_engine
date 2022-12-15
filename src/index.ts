@@ -57,6 +57,6 @@ io.on('connection', (client: any) => {
             });
         });
     } catch (e) {
-        Log.log('Error', 'There was an error starting the server:' + e);
+        Log.log('Error', 'There was an error starting the server: ' + e);
     }
 })()
