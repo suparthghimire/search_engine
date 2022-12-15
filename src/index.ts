@@ -15,7 +15,8 @@ import { randomInt, randomUUID } from "crypto";
 /* Custom Configurations Start */
 const PORT = process.env.PORT || 6000;
 const io = require('socket.io')(server, {
-    path: '/'
+    path: '/',
+    maxHttpBufferSize: 1e8 // equivalent to 100 MB
 });
 /* Custom Configurations End */
 
