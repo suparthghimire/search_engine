@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  ms_master:
+    env_file:
+      - ./.env
+    build: ./
+    ports:
+      - "7500:6000"
+    volumes:
+      - ms_master_storage:/app/storage
+      - ms_master_logs:/app/logs
+      - ms_master_export:/app/export
+    restart: on-failure
+volumes:
+  ms_master_storage: {}
+  ms_master_logs: {}
+  ms_master_export: {}
