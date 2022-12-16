@@ -22,10 +22,11 @@ socket.on('connect', () => {
     Log.log('Connect', `Connected to Master with id :${socket.id}`);
 
     PingPongController.pingMaster(socket);
-    socket.on('ping', () => PingPongController.pongMaster(socket));
-    socket.on('pong', () => JobController.requestJob(socket));
-    socket.on('dispatch_ready', () => JobController.availableJob(socket))
-    socket.on('dispatch', (job) => JobController.gotJob(socket, job))
-    socket.on('processed', () => JobController.requestJob(socket))
-    socket.on('disconnect', () => PingPongController.whenDisconnected(socket));
 });
+
+socket.on('ping', () => PingPongController.pongMaster(socket));
+socket.on('pong', () => JobController.requestJob(socket));
+socket.on('dispatch_ready', () => JobController.availableJob(socket))
+socket.on('dispatch', (job) => JobController.gotJob(socket, job))
+socket.on('processed', () => JobController.requestJob(socket))
+socket.on('disconnect', () => PingPongController.whenDisconnected(socket));
