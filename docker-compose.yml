@@ -10,8 +10,13 @@ services:
       - ms_master_storage:/app/storage
       - ms_master_logs:/app/logs
       - ms_master_export:/app/export
+    networks:
+      - scraper_network
     restart: on-failure
 volumes:
   ms_master_storage: {}
   ms_master_logs: {}
   ms_master_export: {}
+networks:
+  scraper_network:
+    name: scraper_network
