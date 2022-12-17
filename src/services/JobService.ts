@@ -1,8 +1,7 @@
-import { Browser, HTTPResponse } from "puppeteer";
+import { Browser, HTTPResponse, Page } from "puppeteer";
 
 const JobService = {
-    scrape: async (browser: Browser, job: any) => {
-        let page = await browser.newPage();
+    scrape: async (page: Page, job: any) => {
         interface Idata {
             title: string | null;
             description: string | null;
@@ -10,6 +9,7 @@ const JobService = {
             links: string[] | null;
             content: string | null;
             html: string | null;
+            statusCode: null | any;
         }
         let data: Idata = {
             title: null,
@@ -17,9 +17,10 @@ const JobService = {
             keywords: null,
             links: [],
             content: null,
-            html: null
+            html: null,
+            statusCode: null,
         };
-        await page.goto(job.url, { waitUntil: 'networkidle2' });
+        let response = await page.goto(job.url, { waitUntil: 'load', timeout: 0 });
 
         data.title = await page.evaluate(() => document.title || null);
         data.description = await page.evaluate(() => document.querySelector('meta[name="description"]')?.getAttribute("content") || null);
@@ -27,8 +28,8 @@ const JobService = {
         data.links = await page.$$eval('a', (elements) => elements.map((e) => e.href));
         data.content = await page.evaluate(() => document.body.innerText);
         data.html = await page.content();
+        data.statusCode = response?.status();
 
-        await page.close();
         return data;
     }
 }

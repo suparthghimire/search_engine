@@ -13,29 +13,28 @@ const JobController = {
         Log.log("Job Request", "New job requested");
         socket.emit("job");
     },
-    gotJob: async (socket: Socket, job: any) => {
+    gotJob: async (socket: Socket, browser: Browser, job: any) => {
         if (job) {
             job.clientStart = new Date();
             Log.log("Yes Job", "Got a new valid job : " + job.url);
             isWaiting = false;
-            const browser: Browser = await puppeteer.launch({
-                headless: true,
-                args: ["--no-sandbox", "--disabled-setupid-sandbox"],
-                ignoreDefaultArgs: ['--disable-extensions'],
-                executablePath: "/usr/bin/chromium-browser"
-            });
+            let page = await browser.newPage();
             try {
-                let data = await JobService.scrape(browser, job);
+                let data = await JobService.scrape(page, job);
 
-                if (data) {
-
+                if (data && data.statusCode === 200) {
                     // Removing the redundant urls from the data.links
                     data.links = [...new Set(data.links)]
 
                     job.clientEnd = new Date();
-                    Log.log("Fetch Success", (job.clientEnd - job.clientStart) + " ms : " + "Fetched url :" + job.url);
+                    Log.log("Fetch Success", (job.clientEnd - job.clientStart) + " ms - " + data.statusCode + " : " + job.url);
                     Log.log("Job Submit", socket.id + " submitting the job with data");
                     socket.emit("submit", { job, data });
+                }
+                else {
+                    Log.log("Fetch Failed", data.statusCode + " : " + job.url);
+                    Log.log("Job Submit", socket.id + " submitting the job with null");
+                    socket.emit("submit", { job, data: null })
                 }
             } catch (error) {
                 Log.log("Error", error)
@@ -44,7 +43,7 @@ const JobController = {
                 socket.emit("submit", { job, data: null })
             }
             finally {
-                await browser.close()
+                await page.close();
             }
         }
         else {
