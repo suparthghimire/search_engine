@@ -9,6 +9,7 @@
     "watch-dev": "nodemon --watch \"dist/**/*\" -e js ./dist/index.js",
     "build": "swc src -d dist",
     "start": "NODE_ENV=production node dist/index.js",
+    "prod": "yarn build && yarn start",
     "clean": "rm -rf dist"
   },
   "author": "Shree Krishna Lamichhane",
