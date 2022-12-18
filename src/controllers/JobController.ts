@@ -1,7 +1,7 @@
 import puppeteer, { Browser } from "puppeteer";
 import { Socket } from "socket.io-client";
-import Log from "../helpers/log";
-import JobService from "../services/JobService";
+import Log from "../helpers/log.js";
+import JobService from "../services/JobService.js";
 
 import dotenv from "dotenv"
 dotenv.config()
