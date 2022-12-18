@@ -1,5 +1,5 @@
 import { Socket } from "socket.io-client";
-import Log from "../helpers/log";
+import Log from "../helpers/log.js";
 
 const PingPongController = {
     pingMaster: (socket: Socket) => {

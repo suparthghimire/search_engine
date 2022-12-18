@@ -6,8 +6,8 @@ dotenv.config()
 
 /* Custom Libraries Start */
 import Log from "./helpers/log";
-import PingPongController from "./controllers/PingPongController";
-import JobController from "./controllers/JobController";
+import PingPongController from "./controllers/PingPongController.js";
+import JobController from "./controllers/JobController.js";
 import puppeteer, { Browser } from "puppeteer";
 /* Custom Libraries End */
 
