@@ -4,12 +4,23 @@ import fs from "fs";
 import path from "path";
 import AdmZip from "adm-zip";
 
+import dotenv from "dotenv"
+dotenv.config()
+
 // Make a new connection
+
+let DATABASE_HOST = process.env.DATABASE_HOST,
+    DATABASE_PORT = process.env.DATABASE_PORT,
+    DATABASE_NAME = process.env.DATABASE_NAME,
+    DATABASE_USER = process.env.DATABASE_USER,
+    DATABASE_PASS = process.env.DATABASE_PASS;
+
+
 var connection = mysql.createConnection({
-    host: 'localhost',
-    port: 3306,
-    user: 'root',
-    password: 'password'
+    host: DATABASE_HOST,
+    port: Number(DATABASE_PORT),
+    user: DATABASE_USER,
+    password: DATABASE_PASS,
 });
 
 // Connect to database
@@ -20,7 +31,7 @@ if (!fs.existsSync('export')) {
     fs.mkdirSync('export')
 }
 
-connection.query('select * from scraper.Job;', function (err: MysqlError, results: any, fields: any) {
+connection.query('select * from ' + DATABASE_NAME + '.Job;', function (err: MysqlError, results: any, fields: any) {
     // If error, throw
     if (err) throw err;
 
