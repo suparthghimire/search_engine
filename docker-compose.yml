@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  ms_slave:
+    env_file:
+      - ./.env
+    build: ./
+    networks:
+      - scraper_network
+    volumes:
+      - ms_slave_logs:/app/logs
+    restart: on-failure
+volumes:
+  ms_slave_logs: {}
+networks:
+  scraper_network:
+    name: scraper_network
