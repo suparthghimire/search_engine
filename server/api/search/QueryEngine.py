@@ -131,9 +131,10 @@ class QueryEngine:
 
         for qToken in tokenized_query:
             qToken_tf = len(qToken["occurrences"]) / len(tokenized_query)
-            qToken_idf = token_idf[qToken["token"]]
-            qToken_tf_idf = qToken_tf * qToken_idf
-            query_vector.append(qToken_tf_idf)
+            if qToken["token"] in token_idf:
+                qToken_idf = token_idf[qToken["token"]]
+                qToken_tf_idf = qToken_tf * qToken_idf
+                query_vector.append(qToken_tf_idf)
         return {
             "document_vector": document_vector,
             "query_vector": query_vector
