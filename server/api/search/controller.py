@@ -29,9 +29,7 @@ def getSearch():
         return jsonify({"error": "Query too short"}), 400
     if len(query) > 100:
         return jsonify({"error": "Query too long"}), 400
-    # if not query.isalnum():
-    #     return jsonify({"error": "Query must not contain special characters"}), 400
-    
+   
     queryEngine = QueryEngine(query)
     websites = queryEngine.get_rank_websites()
 
@@ -40,11 +38,10 @@ def getSearch():
     end = start + limit
     print(len(websites), start)
     if(start > len(websites) - 1):
-        return jsonify({"error": "Page does not exist"}), 404
-    
-    websites = websites[start:end]
-
-
+        websites = []
+        
+    else:
+        websites = websites[start:end]
 
 
     nextPageNo = page + 1
@@ -55,5 +52,11 @@ def getSearch():
     if(prevPageNo < 1):
         prevPageNo = None
 
-    return jsonify({"query": query, "websites": websites, "nextPageNo": nextPageNo, "prevPageNo": prevPageNo}), 200
+    return jsonify({"data":{
+        "query": query, 
+        "websites": websites, 
+        "nextPageNo": nextPageNo, 
+        "prevPageNo": prevPageNo
+        }
+    }), 200
     
