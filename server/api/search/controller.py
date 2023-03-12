@@ -1,10 +1,12 @@
 from flask import request, jsonify
-
+import time
 # local imports
 
 from search.QueryEngine import QueryEngine
 
 def getSearch():
+    # start timer to measure total time it took for returning results of query
+    start_time = time.time()
     query = request.args.get('q')
     page = request.args.get('page')
     limit = request.args.get('limit')
@@ -31,8 +33,12 @@ def getSearch():
         return jsonify({"error": "Query too long"}), 400
    
     queryEngine = QueryEngine(query)
+    
     websites = queryEngine.get_rank_websites()
-
+    
+    
+    
+    total_websites = len(websites)
     # pagination: for each page, add 100 results
     start = (page - 1) * limit
     end = start + limit
@@ -51,12 +57,16 @@ def getSearch():
 
     if(prevPageNo < 1):
         prevPageNo = None
+    end_time = time.time()
 
-    return jsonify({"data":{
+
+
+    return jsonify({
         "query": query, 
         "websites": websites, 
         "nextPageNo": nextPageNo, 
-        "prevPageNo": prevPageNo
-        }
+        "prevPageNo": prevPageNo,
+        "total_websites": total_websites,
+        "time_taken": end_time - start_time
     }), 200
     

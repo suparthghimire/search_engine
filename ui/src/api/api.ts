@@ -1,4 +1,4 @@
-import { ReturnType } from "@/@types";
+import { MarkdownReturnType, SearchReturnType } from "@/@types";
 import axios from "axios";
 import axiosRetry from "axios-retry";
 
@@ -16,11 +16,16 @@ axiosRetry(instance, {
 export async function SearchAPI(
   query: string,
   page?: string
-): Promise<ReturnType> {
+): Promise<SearchReturnType> {
   const urlParams = new URLSearchParams({
     q: query,
     page: page ? page.toString() : "1",
   });
   const response = await instance.get(`/api/search?${urlParams.toString()}`);
+  return response.data;
+}
+
+export async function MarkDownAPI(): Promise<MarkdownReturnType> {
+  const response = await instance.get(`/api/markdown`);
   return response.data;
 }
