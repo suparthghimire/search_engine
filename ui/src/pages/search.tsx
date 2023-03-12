@@ -1,47 +1,83 @@
 import React from "react";
 import { GetServerSidePropsContext } from "next";
-import { SearchAPI } from "@/api/api";
+import { MarkDownAPI, SearchAPI } from "@/api/api";
 import Head from "next/head";
-import { ReturnType, ErrorReturnType } from "@/@types";
+import { SearchReturnType, MarkdownReturnType } from "@/@types";
 import SearchBox from "@/components/SearchBox";
-import { Container, Paper, Grid, Title, Divider, Flex } from "@mantine/core";
+import Link from "next/link";
+import {
+  Container,
+  Paper,
+  Grid,
+  Title,
+  Divider,
+  Flex,
+  Box,
+} from "@mantine/core";
 import SingleWebsiteCard from "@/components/SingleWebsiteCard";
-export default function Search(props: ReturnType) {
+import { APP_NAME } from "@/utils/constants";
+import ProjectInfoMdViewer from "@/components/ProjectInfoMdViewer";
+import ZeroResults from "@/components/ZeroResults";
+export default function Search(props: {
+  search: SearchReturnType;
+  markdown: MarkdownReturnType;
+}) {
+  console.log(props);
   return (
     <>
       <Head>
-        <title>Search Results</title>
+        <title>
+          Search Results - {"error" in props.search ? "" : props.search.query}
+        </title>
       </Head>
-      <div>
-        {"error" in props ? (
-          <h1>{props.error}</h1>
+      <>
+        {"error" in props.search ? (
+          <h1>{props.search.error}</h1>
         ) : (
-          <Paper p="lg">
-            <Grid align="center">
-              <Grid.Col span={"content"}>
-                <Title>SE</Title>
-              </Grid.Col>
-              <Grid.Col span={8}>
-                <SearchBox defaultValue={props.data.query} />
-              </Grid.Col>
-            </Grid>
-            <Divider my="lg" />
-            <div>
-              <div>
-                Search Results for{" "}
-                <span className="font-bold italic">{props.data.query}</span>
-              </div>
-              <Flex direction="column" gap="lg">
-                {props.data.websites.map((ws, idx) => {
-                  return (
-                    <SingleWebsiteCard key={ws._id + "-" + idx} website={ws} />
-                  );
-                })}
+          <>
+            <Paper p="lg">
+              <Flex align="center" gap="lg" className="max-w-[1200px]">
+                  <Link href="/">
+                  <Title>{APP_NAME}</Title>
+                  </Link>
+                <SearchBox defaultValue={props.search.query} />
               </Flex>
-            </div>
-          </Paper>
+              <Divider my="lg" />
+              <div>
+                <Box py="sm">
+                  About {props.search.total_websites} results {"("}
+                  {props.search.time_taken} seconds{")"}
+                </Box>
+                {/* <Flex gap="lg"> */}
+                <Flex direction="column" gap="lg" className="max-w-[1200px]">
+                  {props.search.websites.length <= 0 ? (
+                    <ZeroResults query={props.search.query} />
+                  ) : (
+                    <>
+                      {props.search.websites.map((ws, idx) => {
+                        return (
+                          <SingleWebsiteCard
+                            key={ws._id + "-" + idx}
+                            website={ws}
+                          />
+                        );
+                      })}
+                    </>
+                  )}
+                </Flex>
+                {/* {"error" in props.markdown ? (
+                    <h1>{props.markdown.error}</h1>
+                  ) : (
+                    <Paper radius="md" p="lg" className="border h-fit w-full">
+                      <ProjectInfoMdViewer md={props.markdown.content} />
+                    </Paper>
+                  )} */}
+                {/* </Flex> */}
+              </div>
+            </Paper>
+          </>
         )}
-      </div>
+      </>
     </>
   );
 }
@@ -49,8 +85,15 @@ export default function Search(props: ReturnType) {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { q, page } = context.query;
   if (!q || !page) return { props: {} };
-  const data = await SearchAPI(q.toString(), page.toString());
+  const searchPromise = SearchAPI(q.toString(), page.toString());
+  const markdownPromise = MarkDownAPI();
+
+  const [search, markdown] = await Promise.all([
+    searchPromise,
+    markdownPromise,
+  ]);
+
   return {
-    props: data,
+    props: { search, markdown },
   };
 }

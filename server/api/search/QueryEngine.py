@@ -19,6 +19,7 @@ from search.database import token_collection, website_collection
 
 class QueryEngine:
     def __init__(self, query):
+        print(query)
         self.query = query
         self.total_websites = website_collection.count_documents({})
     
@@ -166,6 +167,8 @@ class QueryEngine:
                     "_id": 1,
                     "url": 1,
                     "rank":1,
+                    "website_content":1,
+                    "metadata":1
                 }
             }
         ])
@@ -179,7 +182,9 @@ class QueryEngine:
 
         for ws in ws_for_query_list:
             _id = str(ws["_id"])
-            page_rank = ws["rank"]
+            page_rank = 0
+            if "rank" in ws:
+                page_rank = ws["rank"]
             cosine_rank = cosine_similarity[_id]
             final_rank = COSINE_RANK_WT * cosine_rank + PAGE_RANK_WT * page_rank
             final_rank_score[_id] = final_rank
@@ -191,7 +196,15 @@ class QueryEngine:
         for ws in sorted_websites:
             ws["_id"] = str(ws["_id"])
         return sorted_websites
-        
+    def _append_all_scores_to_ws(self, final_rank_score, cosine_similarity, ws_for_query_list):
+        all_rank_websites = []
+        for ws in ws_for_query_list:
+            _id = str(ws["_id"])
+            ws["cosine_rank"] = cosine_similarity[_id]
+            ws["weighted_sum_rank"] = final_rank_score[_id]
+            all_rank_websites.append(ws)
+        return all_rank_websites
+    
     def get_rank_websites(self):
         tokenized_query = self._tokenize()
         extracted_tokens = self._extract_tokens(tokenized_query)
@@ -202,7 +215,9 @@ class QueryEngine:
         
         final_rank_score = self._calc_weighted_sum_rank_score(ws_for_query_list, cosine_similarity)
         
-        sorted_websites = self._get_sorted_websites(final_rank_score, ws_for_query_list)
+        all_rank_websites = self._append_all_scores_to_ws(final_rank_score, cosine_similarity, ws_for_query_list)
+
+        sorted_websites = self._get_sorted_websites(final_rank_score, all_rank_websites)
 
         return sorted_websites
 

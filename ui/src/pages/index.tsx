@@ -1,6 +1,6 @@
 import SearchBox from "@/components/SearchBox";
+import { APP_NAME } from "@/utils/constants";
 import { Center, Title } from "@mantine/core";
-import { useForm } from "@mantine/form";
 import Head from "next/head";
 
 export default function Home() {
@@ -13,7 +13,7 @@ export default function Home() {
         <Center px="md">
           <div>
             <Title py="lg" align="center">
-              Search Information in .np Websites
+              {APP_NAME}
             </Title>
             <div className="w-[75vw] min-w-[390px]">
               <SearchBox />
