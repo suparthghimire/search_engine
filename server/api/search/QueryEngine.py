@@ -108,7 +108,10 @@ class QueryEngine:
                 
                 
                 token_ws_tf = curr_token_freq_in_ws / total_tokens_in_ws
-                token_ws_idf = math.log(self.total_websites / total_docs_token_is_in[token])
+                
+                token_ws_idf = 0
+                if token in total_docs_token_is_in:
+                    token_ws_idf = math.log(self.total_websites / total_docs_token_is_in[token])
                 token_ws_tfidf = token_ws_tf * token_ws_idf
                 
                 token_idf[token] = token_ws_idf
