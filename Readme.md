@@ -10,7 +10,7 @@ Bachelor of Science in Computer Science and Information Technology awarded by
 
 ## Project By
 
-- [Suparth Narayan Ghimire](https://suparthnarayanghimire.com.np)
+- [Suparth Narayan Ghimire](https://suparth.com.np)
 - [Shree Krishna Lamichhane](https://shreekrishnalamichhane.com.np)
 - [Shree Bhadra Bhattarai](#)
 
